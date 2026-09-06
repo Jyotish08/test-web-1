@@ -1,0 +1,876 @@
+/* ==========================================================================
+   RAINFALL — A Study in Three Acts
+   Living Color & Dynamic Typographic Degradation System
+   ========================================================================== */
+
+:root {
+  /* Shared base */
+  --ink: 23 24 20;        /* #171814 — body text */
+  --paper: 237 231 216;   /* #EDE7D8 — chrome/nav background */
+
+  /* Act I — Rainforest: Nature functioning */
+  --act1-bg: 20 40 31;        /* #14281F canopy-deep */
+  --act1-mid: 46 82 64;       /* #2E5240 canopy-mid */
+  --act1-fg: 185 201 190;     /* #B9C9BE mist */
+  --act1-accent: 111 169 140; /* #6FA98C clear water */
+
+  /* Act II — Farmland / Village: Human effort */
+  --act2-bg: 217 207 184;     /* #D9CFB8 overcast parchment sky */
+  --act2-mid: 140 90 52;      /* #8C5A34 sun-baked clay */
+  --act2-fg: 91 74 52;        /* #5B4A34 thatch/soil */
+  --act2-accent: 201 162 39;  /* #C9A227 ripening paddy gold */
+
+  /* Act III — Town / Industry: Pollution & Collapse */
+  --act3-bg: 27 27 24;        /* #1B1B18 void */
+  --act3-mid: 75 78 70;       /* #4B4E46 smog grey */
+  --act3-fg: 110 122 78;      /* #6E7A4E sludge */
+  --act3-accent: 199 199 154; /* #C7C79A acid haze */
+
+  /* Working active variables — dynamically morphed via GSAP scroll */
+  --bg: 20 40 31;
+  --mid: 46 82 64;
+  --fg: 185 201 190;
+  --accent: 111 169 140;
+
+  /* Strict 16px multiple spacing scale */
+  --space-16: 16px;
+  --space-32: 32px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-96: 96px;
+  --space-128: 128px;
+  --space-192: 192px;
+
+  /* Typography scale tokens (desktop defaults) */
+  --font-h1: 88px;
+  --font-h2: 42px;
+  --font-h3: 28px;
+  --font-body: 19px;
+  --font-caption: 15px;
+
+  --lh-h1: 1.05;
+  --lh-h2: 1.15;
+  --lh-h3: 1.30;
+  --lh-body: 1.60;
+  --lh-caption: 1.50;
+
+  /* Variable font default axes for Fraunces (Act I initial state) */
+  --fraunces-soft: 100;
+  --fraunces-opsz: 20;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --font-h1: 44px;
+    --font-h2: 28px;
+    --font-h3: 22px;
+    --font-body: 17px;
+    --font-caption: 14px;
+  }
+}
+
+/* Box sizing & reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
+  font-family: 'Work Sans', system-ui, -apple-system, sans-serif;
+  font-size: var(--font-body);
+  line-height: var(--lh-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
+  transition: background-color 0.1s linear, color 0.1s linear;
+}
+
+/* Base typography constraints */
+p, li, blockquote {
+  max-width: 80ch;
+  text-align: left;
+}
+
+/* Fraunces variable font application */
+h1, h2, h3, .brand-title, .panel-name {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "SOFT" var(--fraunces-soft), "opsz" var(--fraunces-opsz);
+  letter-spacing: -0.015em;
+}
+
+/* Type scale implementations */
+.title-h1 {
+  font-size: var(--font-h1);
+  line-height: var(--lh-h1);
+  font-weight: 500;
+}
+
+.title-h2 {
+  font-size: var(--font-h2);
+  line-height: var(--lh-h2);
+  font-weight: 500;
+}
+
+.title-h3 {
+  font-size: var(--font-h3);
+  line-height: var(--lh-h3);
+  font-weight: 500;
+}
+
+.caption-text {
+  font-size: var(--font-caption);
+  line-height: var(--lh-caption);
+  font-weight: 400;
+  color: rgba(var(--fg), 0.88);
+}
+
+/* ==========================================================================
+   CHROME & HUD (Fixed UI, outside smooth-content)
+   ========================================================================== */
+.site-chrome {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-32) var(--space-48);
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .site-chrome {
+    padding: var(--space-16) var(--space-16);
+  }
+  .brand-act-label {
+    display: none;
+  }
+  .brand-title {
+    font-size: 17px;
+  }
+  .chrome-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+.chrome-brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-16);
+  pointer-events: auto;
+}
+
+.brand-title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: rgb(var(--fg));
+  text-transform: uppercase;
+}
+
+.brand-act-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(var(--fg), 0.72);
+  letter-spacing: 0.05em;
+  font-family: 'Work Sans', sans-serif;
+}
+
+.chrome-controls {
+  pointer-events: auto;
+}
+
+.chrome-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(var(--ink), 0.45);
+  border: 1px solid rgba(var(--fg), 0.25);
+  border-radius: 0; /* Zero radius rule */
+  color: rgb(var(--fg));
+  font-family: 'Work Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.chrome-btn:hover {
+  background: rgba(var(--ink), 0.7);
+  border-color: rgba(var(--fg), 0.6);
+}
+
+.chrome-btn:focus-visible {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 2px;
+}
+
+.chrome-btn[aria-pressed="true"] .sound-wave {
+  animation: pulse-wave 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-wave {
+  0% { opacity: 0.3; }
+  100% { opacity: 1; stroke-width: 2.2; }
+}
+
+/* ==========================================================================
+   PROGRESS INDICATOR (§5.7 — Earned 3-act scroll position device)
+   ========================================================================== */
+.act-indicator {
+  position: fixed;
+  right: var(--space-32);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 95;
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .act-indicator {
+    right: 8px;
+  }
+  .tick-bar {
+    height: 32px;
+  }
+  .indicator-track-list {
+    gap: 8px;
+  }
+}
+
+.indicator-track-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.indicator-btn {
+  background: transparent;
+  border: none;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: rgba(var(--fg), 0.45);
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.indicator-btn:hover,
+.indicator-btn:focus-visible {
+  color: rgb(var(--fg));
+}
+
+.indicator-btn:focus-visible {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 2px;
+}
+
+.tick-bar {
+  width: 2px;
+  height: 48px;
+  background: rgba(var(--fg), 0.2);
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
+.tick-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background: rgb(var(--accent));
+  transition: height 0.05s linear;
+}
+
+.tick-label {
+  opacity: 0.6;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.indicator-btn.active .tick-label {
+  opacity: 1;
+  color: rgb(var(--fg));
+}
+
+/* Closed caption notification toast */
+.sound-caption {
+  position: fixed;
+  bottom: var(--space-32);
+  left: var(--space-48);
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: rgba(var(--ink), 0.7);
+  border: 1px solid rgba(var(--fg), 0.2);
+  border-radius: 0;
+  color: rgb(var(--fg));
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+
+.sound-caption.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.sound-caption-dot {
+  width: 6px;
+  height: 6px;
+  background: rgb(var(--accent));
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .sound-caption {
+    left: var(--space-16);
+    bottom: var(--space-16);
+    max-width: calc(100vw - 80px);
+  }
+}
+
+/* ==========================================================================
+   SCROLLSMOOTHER CONTAINER SETUP
+   ========================================================================== */
+#smooth-wrapper {
+  overflow: hidden;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#smooth-content {
+  overflow: visible;
+  width: 100%;
+}
+
+/* Full-bleed section & shot primitives */
+.act-section {
+  position: relative;
+  width: 100%;
+}
+
+.shot {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  min-height: 640px;
+  overflow: hidden;
+  display: flex;
+}
+
+.media-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.bg-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  will-change: transform;
+}
+
+/* Film scrims — restrained gradients, no heavy artificial fog */
+.scrim {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.scrim-hero {
+  background: linear-gradient(
+    180deg,
+    rgba(var(--act1-bg), 0.35) 0%,
+    transparent 35%,
+    rgba(var(--act1-bg), 0.6) 80%,
+    rgba(var(--act1-bg), 0.88) 100%
+  );
+}
+
+.scrim-subtle {
+  background: rgba(var(--act1-bg), 0.2);
+}
+
+.scrim-act2-a {
+  background: linear-gradient(
+    180deg,
+    rgba(var(--act2-bg), 0.4) 0%,
+    transparent 40%,
+    rgba(var(--act2-bg), 0.75) 100%
+  );
+}
+
+.scrim-act2-b {
+  background: linear-gradient(
+    180deg,
+    transparent 50%,
+    rgba(var(--act2-bg), 0.8) 100%
+  );
+}
+
+/* ==========================================================================
+   ACT I — RAINFOREST
+   ========================================================================== */
+.act-1 {
+  background-color: rgb(var(--act1-bg));
+}
+
+.hero-text-block {
+  position: relative;
+  z-index: 10;
+  align-self: flex-end;
+  padding: 0 var(--space-48) var(--space-96) var(--space-48);
+  max-width: 900px;
+}
+
+@media (max-width: 768px) {
+  .hero-text-block {
+    padding: 0 var(--space-16) var(--space-64) var(--space-16);
+  }
+}
+
+.hero-title-wrap {
+  overflow: hidden;
+  margin-bottom: var(--space-16);
+}
+
+.title-h1 {
+  color: rgb(var(--act1-fg));
+  will-change: transform;
+  display: block;
+}
+
+/* SplitText character helper */
+.split-char {
+  display: inline-block;
+  will-change: transform;
+}
+
+.title-h3 {
+  color: rgb(var(--act1-accent));
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Rain wipe transition element between 1A and 1B */
+.interlude-wipe {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background: rgba(var(--act1-accent), 0.25);
+  box-shadow: 0 0 24px rgba(var(--act1-accent), 0.4);
+}
+
+/* Zone for triggering continuous master timeline RGB morph */
+.morph-zone {
+  height: 35vh;
+  width: 100%;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   ACT II — VILLAGE / FARMLAND
+   ========================================================================== */
+.act-2 {
+  background-color: rgb(var(--bg));
+}
+
+.act2-settle-content {
+  position: relative;
+  z-index: 10;
+  align-self: flex-end;
+  padding: 0 var(--space-48) var(--space-96) var(--space-48);
+  max-width: 800px;
+}
+
+@media (max-width: 768px) {
+  .act2-settle-content {
+    padding: 0 var(--space-16) var(--space-64) var(--space-16);
+  }
+}
+
+.shot-2a .title-h2 {
+  color: rgb(var(--fg));
+  display: block;
+}
+
+.video-tight-crop {
+  object-fit: cover;
+  object-position: center 65%;
+}
+
+.act2-caption-block {
+  position: absolute;
+  right: var(--space-96);
+  bottom: var(--space-64);
+  z-index: 10;
+  max-width: 420px;
+  padding: var(--space-16);
+  background: rgba(var(--bg), 0.85);
+  border-left: 1px solid rgba(var(--fg), 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@media (max-width: 768px) {
+  .act2-caption-block {
+    right: var(--space-16);
+    bottom: var(--space-32);
+    max-width: calc(100vw - 32px);
+  }
+}
+
+/* ==========================================================================
+   ACT III — TOWN / POLLUTION (PINNED TRIPTYCH)
+   ========================================================================== */
+.act-3 {
+  background-color: rgb(var(--bg));
+}
+
+.triptych-pinned-container {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background-color: rgb(var(--bg));
+}
+
+.triptych-stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 768px) {
+  .triptych-stage {
+    flex-direction: column;
+  }
+}
+
+.triptych-panel {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  will-change: clip-path, transform;
+  background-color: rgb(var(--act3-bg));
+}
+
+/* Strict hairline 1px seam between panels — zero radius, zero shadow */
+.triptych-seam {
+  width: 1px;
+  height: 100%;
+  background: rgba(var(--act3-accent), 0.25);
+  z-index: 20;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .triptych-seam {
+    width: 100%;
+    height: 1px;
+  }
+}
+
+.panel-image-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.panel-still {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: contrast(1.04) brightness(0.96);
+}
+
+.panel-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: var(--space-48) var(--space-32);
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(var(--act3-bg), 0.75) 30%,
+    rgba(var(--act3-bg), 0.96) 100%
+  );
+  color: rgb(var(--paper));
+}
+
+@media (max-width: 768px) {
+  .panel-content {
+    padding: var(--space-16);
+  }
+}
+
+.panel-header {
+  margin-bottom: var(--space-16);
+}
+
+.panel-name {
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: rgb(var(--act3-accent));
+  display: inline-block;
+}
+
+.panel-description {
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(var(--paper), 0.94);
+  max-width: 44ch;
+}
+
+/* ==========================================================================
+   CLOSE — THE THESIS & REAL FOOTER
+   ========================================================================== */
+.act-close-section {
+  min-height: 100vh;
+  width: 100%;
+  background-color: rgb(var(--bg));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-128) var(--space-48) var(--space-64);
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .act-close-section {
+    padding: var(--space-96) var(--space-16) var(--space-32);
+  }
+}
+
+.close-inner {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.thesis-block {
+  text-align: center;
+  padding: var(--space-96) 0 var(--space-128);
+}
+
+@media (max-width: 768px) {
+  .thesis-block {
+    padding: var(--space-64) 0 var(--space-96);
+  }
+}
+
+.close-thesis {
+  font-size: var(--font-h3);
+  line-height: 1.45;
+  font-weight: 500;
+  color: rgb(var(--paper));
+  max-width: 32ch;
+  margin: 0 auto;
+}
+
+.thesis-line {
+  display: block;
+}
+
+.footer-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(var(--paper), 0.2);
+  margin-bottom: var(--space-64);
+}
+
+.doc-footer {
+  width: 100%;
+  padding-bottom: var(--space-32);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1.2fr 1.2fr 1fr;
+  gap: var(--space-48);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (max-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-32);
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-32);
+  }
+}
+
+.footer-col-title {
+  font-family: 'Fraunces', serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: rgb(var(--paper));
+  margin-bottom: var(--space-16);
+}
+
+.footer-p {
+  color: rgba(var(--paper), 0.88);
+  font-size: 14px;
+}
+
+.footer-meta-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-meta-list li {
+  color: rgba(var(--paper), 0.85);
+  font-size: 13px;
+}
+
+.meta-label {
+  font-weight: 600;
+  color: rgb(var(--act3-accent));
+  margin-right: 6px;
+}
+
+.footer-caption {
+  font-size: 13px;
+  color: rgba(var(--paper), 0.8);
+  line-height: 1.5;
+}
+
+.code-token {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  padding: 1px 4px;
+  background: rgba(var(--paper), 0.1);
+  color: rgb(var(--act3-accent));
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: var(--space-16);
+}
+
+.footer-btn {
+  display: inline-block;
+  padding: 10px 18px;
+  background: rgb(var(--paper));
+  color: rgb(var(--act3-bg));
+  border: 1px solid rgb(var(--paper));
+  text-decoration: none;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 0;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.footer-btn:hover {
+  opacity: 0.88;
+}
+
+.footer-btn:focus-visible {
+  outline: 2px solid rgb(var(--act3-accent));
+  outline-offset: 2px;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: rgb(var(--paper));
+}
+
+.btn-secondary:hover {
+  background: rgba(var(--paper), 0.1);
+}
+
+.copy-notice {
+  font-size: 12px;
+  color: rgba(var(--paper), 0.5);
+  margin-top: var(--space-16);
+}
+
+/* ==========================================================================
+   ACCESSIBILITY & REDUCED MOTION (§5.8)
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .triptych-panel {
+    clip-path: none !important;
+  }
+
+  .title-h1,
+  .title-h2,
+  .title-h3,
+  .split-char {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

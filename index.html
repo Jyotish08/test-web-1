@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAINFALL — A Study in Three Acts</title>
+  <meta name="description" content="A single-scroll documentary site: nature functioning → human effort → collapse." />
+
+  <!-- Typography: Fraunces (variable axes: opsz, SOFT, wght) & Work Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..700,0..100;1,9..144,400..700,0..100&family=Work+Sans:ital,wght@0,400..600;1,400..600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <!-- Ambient Audio & Sound Design HUD (Outside smooth scroll) -->
+  <header class="site-chrome" aria-label="Documentary navigation">
+    <div class="chrome-brand">
+      <span class="brand-title">RAINFALL</span>
+      <span class="brand-act-label" id="current-act-tag" aria-live="polite">Act I · Canopy</span>
+    </div>
+    <div class="chrome-controls">
+      <button id="sound-toggle" class="chrome-btn" type="button" aria-label="Toggle atmospheric sound" aria-pressed="false">
+        <span class="sound-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+            <path class="sound-wave sound-wave-1" d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path class="sound-wave sound-wave-2" d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+        </span>
+        <span class="sound-text">Atmosphere</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Functional 3-Act Scroll Position Device (§5.7) -->
+  <nav class="act-indicator" aria-label="Scroll act indicator">
+    <ul class="indicator-track-list">
+      <li class="indicator-item">
+        <button class="indicator-btn" data-act-target="#act1" aria-label="Jump to Act I: Rainforest" title="Act I: Rainforest">
+          <span class="tick-bar"><span class="tick-fill" id="tick-fill-1"></span></span>
+          <span class="tick-label">I</span>
+        </button>
+      </li>
+      <li class="indicator-item">
+        <button class="indicator-btn" data-act-target="#act2" aria-label="Jump to Act II: Human Effort" title="Act II: Farmland">
+          <span class="tick-bar"><span class="tick-fill" id="tick-fill-2"></span></span>
+          <span class="tick-label">II</span>
+        </button>
+      </li>
+      <li class="indicator-item">
+        <button class="indicator-btn" data-act-target="#act3" aria-label="Jump to Act III: Collapse" title="Act III: Collapse">
+          <span class="tick-bar"><span class="tick-fill" id="tick-fill-3"></span></span>
+          <span class="tick-label">III</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Dynamic Closed Caption Sound Toast -->
+  <aside id="sound-caption" class="sound-caption" aria-live="polite" aria-atomic="true">
+    <span class="sound-caption-dot" aria-hidden="true"></span>
+    <span id="caption-text" class="sound-caption-text">Rainfall striking broadleaf canopy</span>
+  </aside>
+
+  <!-- ScrollSmoother wrapper structure -->
+  <div id="smooth-wrapper">
+    <div id="smooth-content">
+
+      <!-- =====================================================
+           ACT I — RAINFOREST: NATURE FUNCTIONING
+      ====================================================== -->
+      <section id="act1" class="act-section act-1" aria-label="Act I: Rainforest">
+        <!-- 1A: Leaf-Cascade Video (full-bleed loop) -->
+        <article class="shot shot-1a full-bleed">
+          <div class="media-frame">
+            <video
+              id="video-1a"
+              class="bg-video"
+              src="/video/video_1.mp4"
+              poster="/posters/poster_1a.png"
+              muted
+              playsinline
+              loop
+              autoplay
+              preload="auto"
+              aria-label="High-resolution slow motion footage of rainwater cascading over wild broadleaf canopy"
+            ></video>
+            <div class="scrim scrim-hero" aria-hidden="true"></div>
+          </div>
+
+          <!-- Hero typography: restrained, lower-left, single line h1, no eyebrow -->
+          <div class="hero-text-block">
+            <div class="hero-title-wrap">
+              <h1 id="act1-title" class="title-h1">Rainfall</h1>
+            </div>
+            <p id="act1-subline" class="title-h3">a study in what still works</p>
+          </div>
+        </article>
+
+        <!-- Rain-wipe transition into 1B -->
+        <div class="interlude-wipe" id="wipe-1" aria-hidden="true"></div>
+
+        <!-- 1B: Hornbill Glide Video (full-bleed, no text overlay at all) -->
+        <article class="shot shot-1b full-bleed" aria-label="Great hornbill gliding over the intact misty canopy">
+          <div class="media-frame">
+            <video
+              id="video-1b"
+              class="bg-video"
+              src="/video/video_2.mp4"
+              poster="/posters/poster_1b.png"
+              muted
+              playsinline
+              loop
+              autoplay
+              preload="auto"
+              aria-label="A great hornbill glides silently across the dense rainforest canopy in mist"
+            ></video>
+            <div class="scrim scrim-subtle" aria-hidden="true"></div>
+          </div>
+          <!-- Deliberately NO text overlay here: letting the one clean shot breathe -->
+        </article>
+      </section>
+
+      <!-- ACT I → II Palette Transition Scrub Zone -->
+      <div id="trans-1-2" class="morph-zone" aria-hidden="true"></div>
+
+      <!-- =====================================================
+           ACT II — VILLAGE / FARMLAND: HUMAN EFFORT
+      ====================================================== -->
+      <section id="act2" class="act-section act-2" aria-label="Act II: Human Effort">
+        <!-- 2A: Bund-inspection pan -->
+        <article class="shot shot-2a full-bleed">
+          <div class="media-frame">
+            <video
+              id="video-2a"
+              class="bg-video"
+              src="/video/video_3.mp4"
+              poster="/posters/poster_2a.png"
+              muted
+              playsinline
+              loop
+              autoplay
+              preload="auto"
+              aria-label="Farmer walking barefoot along the flooded bunds of a terraced rice paddy in steady rain"
+            ></video>
+            <div class="scrim scrim-act2-a" aria-hidden="true"></div>
+          </div>
+
+          <!-- h2: Held together by hand — appears as camera settles -->
+          <div class="act2-settle-content">
+            <h2 id="act2-title" class="title-h2">Held together by hand</h2>
+          </div>
+        </article>
+
+        <!-- 2B: Hand-repair close-up (tight crop, small caption bottom-right) -->
+        <article class="shot shot-2b full-bleed">
+          <div class="media-frame">
+            <video
+              id="video-2b"
+              class="bg-video video-tight-crop"
+              src="/video/video_4.mp4"
+              poster="/posters/poster_2b.png"
+              muted
+              playsinline
+              loop
+              autoplay
+              preload="auto"
+              aria-label="Close-up of weathered hands gathering and packing wet clay onto an eroding earthen bund"
+            ></video>
+            <div class="scrim scrim-act2-b" aria-hidden="true"></div>
+          </div>
+
+          <div class="act2-caption-block">
+            <p class="caption-text">
+              Wet silt tamped by palm along the lower ridge before the overflow cuts through the rootbed.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <!-- ACT II → III Palette & Type Degradation Scrub Zone -->
+      <div id="trans-2-3" class="morph-zone" aria-hidden="true"></div>
+
+      <!-- =====================================================
+           ACT III — TOWN / POLLUTION: COLLAPSE (Pinned triptych)
+      ====================================================== -->
+      <section id="act3" class="act-section act-3" aria-label="Act III: Collapse">
+        <div id="act3-panels" class="triptych-pinned-container">
+          <div class="triptych-stage">
+            <!-- Panel 1: WATER -->
+            <article class="triptych-panel panel-water">
+              <div class="panel-image-wrap">
+                <img
+                  class="panel-still"
+                  src="/images/Gemini_Generated_Image_noh4sjnoh4sjnoh4.png"
+                  alt="Rainwater pooled on cracked asphalt and concrete, carrying iridescent oil films and discarded commercial plastic"
+                  loading="eager"
+                  width="1024"
+                  height="1820"
+                />
+              </div>
+              <div class="panel-content">
+                <header class="panel-header">
+                  <span class="panel-name">WATER</span>
+                </header>
+                <p class="panel-description">
+                  Precipitation collects petroleum sheen from curbs and concrete channels, unable to reach an aquifer.
+                </p>
+              </div>
+            </article>
+
+            <!-- Hairline Seam 1 -->
+            <div class="triptych-seam" aria-hidden="true"></div>
+
+            <!-- Panel 2: AIR -->
+            <article class="triptych-panel panel-air">
+              <div class="panel-image-wrap">
+                <img
+                  class="panel-still"
+                  src="/images/Gemini_Generated_Image_quazagquazagquaz.png"
+                  alt="Industrial smokestack venting sulfurous yellow fumes directly into heavy atmospheric acid rainfall"
+                  loading="eager"
+                  width="1024"
+                  height="1820"
+                />
+              </div>
+              <div class="panel-content">
+                <header class="panel-header">
+                  <span class="panel-name">AIR</span>
+                </header>
+                <p class="panel-description">
+                  Falling rain scrubs airborne nitrates and sulfuric exhaust, lowering rainwater pH before it hits the roofline.
+                </p>
+              </div>
+            </article>
+
+            <!-- Hairline Seam 2 -->
+            <div class="triptych-seam" aria-hidden="true"></div>
+
+            <!-- Panel 3: LAND -->
+            <article class="triptych-panel panel-land">
+              <div class="panel-image-wrap">
+                <img
+                  class="panel-still"
+                  src="/images/Gemini_Generated_Image_9tfwfn9tfwfn9tfw.png"
+                  alt="Desiccated earth fractured into baked hexagonal crusts, drained by industrial chemical runoff"
+                  loading="eager"
+                  width="1024"
+                  height="1820"
+                />
+              </div>
+              <div class="panel-content">
+                <header class="panel-header">
+                  <span class="panel-name">LAND</span>
+                </header>
+                <p class="panel-description">
+                  Parched, compacted soil repels moisture; toxic runoff carves hard gullies through dead root matter.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           CLOSE — THE THESIS & DOCUMENTARY COLOPHON
+      ====================================================== -->
+      <section id="act-close" class="act-section act-close-section" aria-label="Closing Reflection">
+        <div class="close-inner">
+          <div class="thesis-block">
+            <h3 class="close-thesis" id="closing-thesis">
+              <span class="thesis-line">Rain falls the same everywhere.</span>
+              <span class="thesis-line">What it meets decides what it becomes.</span>
+            </h3>
+          </div>
+
+          <!-- Real footer, unlike the reference site's abrupt stop -->
+          <footer class="doc-footer" role="contentinfo">
+            <div class="footer-divider" aria-hidden="true"></div>
+            
+            <div class="footer-grid">
+              <div class="footer-col col-synopsis">
+                <p class="footer-p">
+                  Documenting the hydrologic cycle through three stages of contact: intact canopy absorption, agrarian stewardship, and industrial runoff saturation.
+                </p>
+              </div>
+
+              <div class="footer-col col-archive">
+                <h4 class="footer-col-title">Archive Details</h4>
+                <ul class="footer-meta-list">
+                  <li><span class="meta-label">Act I</span> Canopy Basin · Borneo Primary Lowland</li>
+                  <li><span class="meta-label">Act II</span> Subak Terraces · Tabanan Valley</li>
+                  <li><span class="meta-label">Act III</span> Industrial Canal & Estuary Basin</li>
+                </ul>
+              </div>
+
+              <div class="footer-col col-tech">
+                <h4 class="footer-col-title">Visual System</h4>
+                <p class="footer-caption">
+                  Color channels morph continuously via scroll scrub on numeric RGB triples. Display typeface Fraunces dynamically degrades from <code class="code-token">SOFT 100</code> to <code class="code-token">SOFT 0</code> on descent into Act III.
+                </p>
+              </div>
+
+              <div class="footer-col col-actions">
+                <h4 class="footer-col-title">Share & Record</h4>
+                <div class="action-buttons">
+                  <button id="share-btn" class="footer-btn" type="button">
+                    <span class="btn-text">Share Document</span>
+                  </button>
+                  <a href="#act1" class="footer-btn btn-secondary" id="restart-btn">
+                    Return to Act I
+                  </a>
+                </div>
+                <p class="copy-notice">© 2026 RAINFALL documentary project.</p>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </section>
+
+    </div><!-- /#smooth-content -->
+  </div><!-- /#smooth-wrapper -->
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
